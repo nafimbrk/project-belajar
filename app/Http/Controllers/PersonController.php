@@ -14,11 +14,10 @@ class PersonController extends Controller
     {
         $keyword = $request->input('keyword');
 
-        $person = Person::with('contact')
-            ->where('name', 'LIKE', '%' . $keyword . '%')
+        $person = Person::where('name', 'LIKE', '%' . $keyword . '%')
             ->orWhere('age', 'LIKE', '%' . $keyword . '%')
             ->orWhere('country', 'LIKE', '%' . $keyword . '%')
-            ->paginate(5);
+            ->paginate(5)->withQueryString();
 
 
         return view('person.index', compact('person'));
@@ -58,7 +57,9 @@ class PersonController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $person = Person::with('contact')->findOrFail($id);
+
+        return view('person.show', compact('person'));
     }
 
     /**
@@ -104,5 +105,19 @@ class PersonController extends Controller
         $person->delete();
 
         return redirect()->route('person.index')->with('status', 'data berhasil dihapus');
+    }
+
+    public function deletes()
+    {
+        $person = Person::onlyTrashed()->get();
+
+        return view('person.deletes', compact('person'));
+    }
+
+    public function restore($id)
+    {
+        $person = Person::withTrashed()->findOrFail($id)->restore();
+
+        return redirect()->route('person.index')->with('status', 'data berhasil direstore');
     }
 }
