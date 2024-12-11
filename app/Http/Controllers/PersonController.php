@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Person;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PersonController extends Controller
 {
@@ -39,15 +40,26 @@ class PersonController extends Controller
         $validated = $request->validate([
             'name' => 'required',
             'age' => 'required|integer',
-            'country' => 'required'
+            'country' => 'required',
+            'image' => 'mimes:jpeg,jpg,png,gif|max:10000'
+
         ], [
             'name.required' => 'nama wajib diisi',
             'age.required' => 'umur wajib diisi',
             'age.integer' => 'umur wajib berupa angka',
-            'country.required' => 'alamat wajib diisi'
+            'country.required' => 'alamat wajib diisi',
+            'image.mimes' => 'foto wajib jpeg/jpg/png/gif',
+            'image.max' => 'ukuran gambar terlalu besar'
         ]);
 
-        $person = Person::create($request->all());
+        $input = $request->all();
+
+        $image = $request->file('image');
+        $image->storeAs('public/image', $image->hashName());
+
+        $input['image'] = $image->hashName();
+
+        Person::create($input);
 
         return redirect()->route('person.index')->with('status', 'data berhasil ditambahkan');
     }
@@ -90,7 +102,25 @@ class PersonController extends Controller
             'country.required' => 'alamat wajib diisi'
         ]);
 
-        $person->update($request->all());
+        $input = $request->all();
+        
+        if ($request->hasFile('image')) {
+            //upload new image
+            $image = $request->file('image');
+            $image->storeAs('public/image', $image->hashName());
+            
+            //delete old image
+            Storage::delete('public/image/' . $person->image);
+            
+            $input['image'] = $image->hashName();
+        } else {
+            
+            unset($input['image']);
+        }
+
+        $person->update($input);
+
+
 
         return redirect()->route('person.index')->with('status', 'data berhasil diubah');
     }
@@ -121,3 +151,4 @@ class PersonController extends Controller
         return redirect()->route('person.index')->with('status', 'data berhasil direstore');
     }
 }
+

@@ -28,7 +28,7 @@
 
 
 
-    <form class="max-w-sm mx-auto" action="{{ route('person.store') }}" method="POST">
+    <form class="max-w-sm mx-auto" action="{{ route('person.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-5">
             <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama</label>
@@ -43,6 +43,11 @@
         <div class="mb-5">
             <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Negara</label>
             <input type="text" name="country" id="email"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+        </div>
+        <div class="mb-5">
+            <label for="file" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih Foto</label>
+            <input type="file" name="image" id="file"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
         </div>
         <button type="submit"

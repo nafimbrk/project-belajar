@@ -6,6 +6,7 @@
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
+                    <th scope="col" class="px-6 py-3">Gambar</th>
                     <th scope="col" class="px-6 py-3">Name</th>
                     <th scope="col" class="px-6 py-3">Age</th>
                     <th scope="col" class="px-6 py-3">Country</th>
@@ -16,6 +17,14 @@
             <tbody>
                 <tr
                     class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td class="px-6 py-4">
+                        @if ($person->image)
+                        <img src="{{ asset('/storage/image/' . $person->image) }}" alt="">
+                        @else
+                        -
+                        @endif
+
+                    </td>
                     <td class="px-6 py-4">{{ $person->name }}</td>
                     <td class="px-6 py-4">{{ $person->age }}</td>
                     <td class="px-6 py-4">{{ $person->country }}</td>

@@ -41,9 +41,6 @@
             </form>
         </div>
 
-
-
-
         @if (session('status'))
             <div id="alert-3"
                 class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
@@ -76,6 +73,7 @@
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th scope="col" class="px-6 py-3">No</th>
+                            <th scope="col" class="px-6 py-3">Image</th>
                             <th scope="col" class="px-6 py-3">Name</th>
                             <th scope="col" class="px-6 py-3">Age</th>
                             <th scope="col" class="px-6 py-3">Country</th>
@@ -87,6 +85,13 @@
                             <tr
                                 class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                 <td class="px-6 py-4">{{ $loop->iteration }}</td>
+                                <td class="px-6 py-4">
+                                    @if ($prsn->image)
+                                    <img src="{{ asset('storage/image/' . $prsn->image)}}" alt="">
+                                    @else
+                                    -
+                                    @endif
+                                </td>
                                 <td class="px-6 py-4">{{ $prsn->name }}</td>
                                 <td class="px-6 py-4">{{ $prsn->age }}</td>
                                 <td class="px-6 py-4">{{ $prsn->country }}</td>
