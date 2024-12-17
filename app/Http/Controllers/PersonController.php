@@ -15,11 +15,10 @@ class PersonController extends Controller
     {
         $keyword = $request->input('keyword');
 
-        $person = Person::where('name', 'LIKE', '%' . $keyword . '%')
+        $person = Person::with('contact')
+            ->where('name', 'LIKE', '%' . $keyword . '%')
             ->orWhere('age', 'LIKE', '%' . $keyword . '%')
-            ->orWhere('country', 'LIKE', '%' . $keyword . '%')
-            ->paginate(5)->withQueryString();
-
+            ->paginate(5);
 
         return view('person.index', compact('person'));
     }
@@ -37,7 +36,7 @@ class PersonController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required',
             'age' => 'required|integer',
             'country' => 'required',
@@ -54,10 +53,13 @@ class PersonController extends Controller
 
         $input = $request->all();
 
-        $image = $request->file('image');
-        $image->storeAs('public/image', $image->hashName());
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $image->storeAs('public/image', $image->hashName());
 
-        $input['image'] = $image->hashName();
+            $input['image'] = $image->hashName();
+        }
+
 
         Person::create($input);
 
@@ -91,30 +93,33 @@ class PersonController extends Controller
     {
         $person = Person::findOrFail($id);
 
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required',
             'age' => 'required',
-            'country' => 'required'
+            'country' => 'required',
+            'image' => 'mimes:jpeg,jpg,png,gif|max:10000'
         ], [
             'name.required' => 'nama wajib diisi',
             'age.required' => 'umur wajib diisi',
             'age.integer' => 'umur wajib berupa angka',
-            'country.required' => 'alamat wajib diisi'
+            'country.required' => 'alamat wajib diisi',
+            'image.mimes' => 'foto wajib jpeg/jpg/png/gif',
+            'image.max' => 'ukuran gambar terlalu besar'
         ]);
 
         $input = $request->all();
-        
+
         if ($request->hasFile('image')) {
             //upload new image
             $image = $request->file('image');
             $image->storeAs('public/image', $image->hashName());
-            
+
             //delete old image
             Storage::delete('public/image/' . $person->image);
-            
+
             $input['image'] = $image->hashName();
         } else {
-            
+
             unset($input['image']);
         }
 
@@ -151,4 +156,3 @@ class PersonController extends Controller
         return redirect()->route('person.index')->with('status', 'data berhasil direstore');
     }
 }
-

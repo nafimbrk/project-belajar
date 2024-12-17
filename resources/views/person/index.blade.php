@@ -32,7 +32,7 @@
                     </div>
                     <input type="text" name="keyword" id="default-search"
                         class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Search..." />
+                        placeholder="Search..." value="{{ request()->get('keyword', '')  }}" />
                     <button type="submit"
                         class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         Search
@@ -76,7 +76,7 @@
                             <th scope="col" class="px-6 py-3">Image</th>
                             <th scope="col" class="px-6 py-3">Name</th>
                             <th scope="col" class="px-6 py-3">Age</th>
-                            <th scope="col" class="px-6 py-3">Country</th>
+                            <th scope="col" class="px-6 py-3">Phone</th>
                             <th scope="col" class="px-6 py-3">AKsi</th>
                         </tr>
                     </thead>
@@ -87,14 +87,18 @@
                                 <td class="px-6 py-4">{{ $loop->iteration }}</td>
                                 <td class="px-6 py-4">
                                     @if ($prsn->image)
-                                    <img src="{{ asset('storage/image/' . $prsn->image)}}" alt="">
+                                    <img src="{{ asset('storage/image/' . $prsn->image)}}" alt="" width="100px">
                                     @else
                                     -
                                     @endif
                                 </td>
                                 <td class="px-6 py-4">{{ $prsn->name }}</td>
                                 <td class="px-6 py-4">{{ $prsn->age }}</td>
-                                <td class="px-6 py-4">{{ $prsn->country }}</td>
+                                @forelse ($prsn->contact as $item)
+                                <td class="px-6 py-4">{{ $item->phone }}</td>
+                                @empty
+                                <td class="px-6 py-4">-</td>
+                                @endforelse
                                 <td class="px-6 py-4">
                                     <div class="flex">
                                         <a href="{{ route('person.show', $prsn->id) }}"
@@ -121,7 +125,7 @@
         @endif
 
         <div class="mb-10">
-            {{ $person->links() }}
+            {{ $person->withQueryString()->links() }}
         </div>
 
 

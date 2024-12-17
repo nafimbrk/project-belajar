@@ -16,4 +16,9 @@ class Person extends Model
     {
         return $this->hasMany(Contact::class, 'people_id', 'id');
     }
+
+    public function job()
+    {
+        return $this->hasMany(Job::class, 'people_id', 'id');
+    }
 }
